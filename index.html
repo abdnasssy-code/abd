@@ -1,0 +1,1026 @@
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منظومة التقارير اليومية وأرشفة البريد (PDF) - كلية الشؤون الفنية والإدارية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #122e23;
+            --primary-light: #1b4334;
+            --accent-color: #c59b27;
+            --accent-hover: #a37f1e;
+            --bg-color: #f2f5f3;
+            --card-bg: #ffffff;
+            --text-color: #2b3a32;
+            --border-color: #d1dcd5;
+            --success-color: #2e7d32;
+            --danger-color: #c62828;
+            --shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 90px; }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: #fff;
+            padding: 20px 15px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+        .header-logo { width: 75px; height: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .header-titles h1 { font-size: 22px; font-weight: 800; color: #ffffff; }
+        .header-titles h2 { font-size: 16px; font-weight: 600; color: var(--accent-color); margin-top: 2px; }
+        .header-titles p { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+
+        nav {
+            background-color: var(--primary-light);
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            flex-wrap: wrap;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        nav a:hover, nav a.active { background-color: var(--accent-color); color: #111; }
+
+        .main-container { max-width: 1100px; margin: 25px auto; padding: 0 15px; }
+
+        .info-bar {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .info-bar .reminder { font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 8px; }
+        .info-bar .weather { display: flex; align-items: center; gap: 8px; font-size: 14px; background: #eef4f0; padding: 6px 15px; border-radius: 20px; }
+
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #eef4f0;
+            padding-bottom: 12px;
+ margin-bottom: 20px;
+        }
+        .section-title { font-size: 17px; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 10px; }
+        .section-title span { background: var(--accent-color); color: #fff; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 13px; font-weight: 700; color: #44564c; }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            background-color: #fafcfb;
+            transition: 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary-light);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(27,67,52,0.1);
+        }
+
+        .table-responsive { overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13.5px; }
+        th, td { border: 1px solid var(--border-color); padding: 10px 12px; }
+        th { background-color: #eef4f0; color: var(--primary-color); font-weight: 700; }
+        td input { width: 100%; border: none; background: transparent; text-align: center; font-size: 13.5px; }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-primary { background-color: var(--primary-color); color: #fff; }
+        .btn-primary:hover { background-color: var(--primary-light); }
+        .btn-accent { background-color: var(--accent-color); color: #111; }
+        .btn-accent:hover { background-color: var(--accent-hover); }
+        .btn-danger { background-color: var(--danger-color); color: #fff; padding: 5px 10px; font-size: 12px; }
+        .btn-secondary { background-color: #6c757d; color: #fff; }
+
+        .calc-box {
+            background: #f8faf9;
+            border: 1px dashed var(--primary-light);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            text-align: center;
+        }
+        .calc-item { background: #fff; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); }
+        .calc-item label { font-size: 12px; color: #666; display: block; }
+        .calc-item span { font-size: 16px; font-weight: bold; color: var(--primary-color); }
+        .calc-item.total span { color: var(--danger-color); font-size: 18px; }
+
+        /* Mail Archiving System & PDF Styles */
+        .mail-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; flex-wrap: wrap; }
+        .mail-tab { padding: 8px 18px; border: 1px solid var(--border-color); background: #fff; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 13px; transition: 0.2s; }
+        .mail-tab.active { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        .mail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+ .mail-card { background: #fff; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        
+        .pdf-thumb {
+            width: 100%;
+            height: 160px;
+            background: #eef4f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--primary-color);
+            font-weight: bold;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .pdf-thumb:hover { background: #e0ece5; }
+        .pdf-thumb span { font-size: 36px; }
+
+        .mail-card img { width: 100%; height: 160px; object-fit: cover; cursor: pointer; background: #eef4f0; }
+        .mail-card-body { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .mail-card-title { font-weight: 700; font-size: 14px; color: var(--primary-color); margin-bottom: 5px; }
+        .mail-card-meta { font-size: 12px; color: #666; margin-bottom: 8px; }
+        .mail-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-bottom: 10px; width: fit-content; }
+        .badge-منجز { background: #c6f6d5; color: #22543d; }
+        .badge-بانتظار-الرد { background: #feefc3; color: #744210; }
+        .badge-معلق { background: #fed7d7; color: #742a2a; }
+
+        .floating-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-top: 2px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #fff;
+            width: 92%;
+            max-width: 800px;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 15px; }
+        .modal-header h3 { color: var(--primary-color); font-size: 18px; }
+        .close-modal { font-size: 22px; cursor: pointer; color: #888; }
+        .cliche-preview { background: #1e2923; color: #4af699; padding: 15px; border-radius: 6px; font-family: monospace; white-space: pre-wrap; font-size: 13.5px; line-height: 1.6; direction: rtl; text-align: right; }
+
+        footer {
+            background-color: var(--primary-color);
+            color: #ccc;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            margin-top: 40px;
+            border-top: 3px solid var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img class="header-logo" alt="شعار الجمهورية العربية السورية" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Emblem_of_Syria_%282025%E2%80%93present%29.svg/500px-Emblem_of_Syria_%282025%E2%80%93present%29.svg.png">
+            <div class="header-titles">
+                <h1>الجمهورية العربية السورية - وزارة الدفاع</h1>
+                <h2>إدارة التدريب العسكري</h2>
+                <p>كلية الشؤون الفنية والإدارية - منظومة التقارير وأرشفة البريد</p>
+            </div>
+        </div>
+    </header>
+ <nav>
+        <a href="#section-1" class="active">التقرير اليومي</a>
+        <a href="#section-mail">📬 أرشيف المراسلات والبريد</a>
+        <a href="javascript:void(0)" onclick="openModal('historyModal')">سجل التقارير السابق</a>
+        <a href="javascript:void(0)" onclick="openModal('settingsModal')">إعدادات النظام والنسخ الاحتياطي</a>
+    </nav>
+
+    <div class="container main-container">
+
+        <div class="info-bar">
+            <div class="reminder">
+                <span>✨ منظومة إدارة التقارير والأرشفة الإلكترونية اليومية ✨</span>
+            </div>
+            <div class="weather">
+                <span>الطقس اليوم:</span>
+                <input type="text" id="weatherInput" value="جاري الجلب..." oninput="autoSaveForm()" style="border:none; background:transparent; font-weight:bold; width:150px; text-align:center;">
+            </div>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="section-card" id="section-1">
+            <div class="section-header">
+                <div class="section-title"><span>1</span> أولاً: البيانات الإدارية ومعلومات الكلية</div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>التاريخ:</label>
+                    <input type="date" id="reportDate" onchange="autoSaveForm()">
+                </div>
+                <div class="form-group">
+                    <label>اليوم:</label>
+                    <select id="reportDay" onchange="autoSaveForm()">
+                        <option>السبت</option><option>الأحد</option><option>الإثنين</option>
+                        <option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option><option>الجمعة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>قائد الدفعة المناوب:</label>
+                    <input type="text" id="dutyOfficer" placeholder="الرتبة والاسم الكامل" oninput="autoSaveForm()">
+                </div>
+                <div class="form-group">
+                    <label>الضابط المناوب:</label>
+                    <input type="text" id="assistantOfficer" placeholder="الرتبة والاسم الكامل" oninput="autoSaveForm()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title"><span>2</span> ثانياً: موقف الدورات المنعقدة (الفنية والإدارية)</div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>اسم الدورة المنعقدة حالياً:</label>
+                    <input type="text" id="courseName" placeholder="مثال: دورة الشؤون الماليّة والإدارية رقم 14" oninput="autoSaveForm()">
+                </div>
+                <div class="form-group">
+                    <label>عدد المتدربين / الطلاب:</label>
+                    <input type="number" id="traineesCount" value="0" oninput="calculateFoodTotals(); autoSaveForm();">
+                </div>
+                <div class="form-group">
+                    <label>حالة ومرحلة التدريب:</label>
+                    <select id="courseStatus" onchange="autoSaveForm()">
+                        <option>حسب البرنامج الأسبوعي المعتمد</option>
+                        <option>محاضرات نظرية في القاعات الدراسية</option>
+                        <option>تطبيق عملي في المعامل والورش الفنية</option>
+                        <option>مشروع تخرج / امتحانات نهائية</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title"><span>3</span> ثالثاً: كوادر الضباط والمهندسين والإداريين</div>
+ </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>قيادة الكلية والضباط:</label>
+                    <input type="number" id="staffCommand" value="0" oninput="calculateFoodTotals(); autoSaveForm();">
+                </div>
+                <div class="form-group">
+                    <label>كادر المهندسين والفنيين:</label>
+                    <input type="number" id="staffEngineers" value="0" oninput="calculateFoodTotals(); autoSaveForm();">
+                </div>
+                <div class="form-group">
+                    <label>الكادر الإداري والسكرتارية:</label>
+                    <input type="number" id="staffAdmin" value="0" oninput="calculateFoodTotals(); autoSaveForm();">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title"><span>4</span> رابعاً: كادر المحاضرين والمدربين</div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>عدد المحاضرين العسكريين:</label>
+                    <input type="number" id="instructorsMil" value="0" oninput="calculateFoodTotals(); autoSaveForm();">
+                </div>
+                <div class="form-group">
+                    <label>عدد المحاضرين المدنيين / الزوار:</label>
+                    <input type="number" id="instructorsCiv" value="0" oninput="calculateFoodTotals(); autoSaveForm();">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title"><span>5</span> خامساً: الكادر الطبي والخدمي</div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>الكادر الطبي (عيادة الكلية):</label>
+                    <input type="number" id="staffMedical" value="0" oninput="calculateFoodTotals(); autoSaveForm();">
+                </div>
+                <div class="form-group">
+                    <label>كادر الخدمات والطبابة:</label>
+                    <input type="number" id="staffServices" value="0" oninput="calculateFoodTotals(); autoSaveForm();">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6 -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title"><span>6</span> سادساً: تفقد الحراسة والخدمات الداخلية</div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>قوة الحرس المناوبة (العدد):</label>
+                    <input type="number" id="staffGuard" value="0" oninput="calculateFoodTotals(); autoSaveForm();">
+                </div>
+                <div class="form-group">
+                    <label>حالة تفقد نقاط الحراسة:</label>
+                    <select id="guardStatus" onchange="autoSaveForm()">
+                        <option>تم التفقد والوضع ممتاز والانضباط تام</option>
+                        <option>تم التفقد مع وجود ملاحظات تم التوجيه بمعالجتها</option>
+                        <option>تفقد دوري مستمر دون أي حوادث</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7 -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title"><span>7</span> سابعاً: الزيارات والوفود الخارجية</div>
+                <button class="btn btn-accent" onclick="addVisitRow()">+ إضافة زيارة</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+ <th>الاسم والرتبة</th>
+                            <th>الصفة / الجهة</th>
+                            <th>الغرض من الزيارة</th>
+                            <th>المدة / الوقت</th>
+                            <th>ملاحظات</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section 8 -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title"><span>8</span> ثامناً: جدول التموين والإطعام</div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>وقت استلام الوجبات:</label>
+                    <select id="mealTime" onchange="autoSaveForm()">
+                        <option>وجبة الإفطار (07:00)</option>
+                        <option>وجبة الغداء (13:30)</option>
+                        <option>وجبة العشاء (19:30)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>حالة استلام المخصصات:</label>
+                    <input type="text" id="mealStatus" value="تم استلام كافة التعيينات والخبز بالكامل دون نقص" oninput="autoSaveForm()">
+                </div>
+            </div>
+
+            <div class="calc-box">
+                <div class="calc-item"><label>القيادة والضباط</label><span id="c_command">0</span></div>
+                <div class="calc-item"><label>المهندسين والفنيين</label><span id="c_engineers">0</span></div>
+                <div class="calc-item"><label>الإداريين</label><span id="c_admin">0</span></div>
+                <div class="calc-item"><label>المحاضرين</label><span id="c_instructors">0</span></div>
+                <div class="calc-item"><label>الطبي والخدمات</label><span id="c_medical">0</span></div>
+                <div class="calc-item"><label>الحرس</label><span id="c_guard">0</span></div>
+                <div class="calc-item"><label>الدورة</label><span id="c_trainees">0</span></div>
+                <div class="calc-item total"><label>العدد الكلي للمستحقين</label><span id="c_total">0</span></div>
+            </div>
+        </div>
+
+        <!-- Section 9 -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title"><span>9</span> تاسعاً: جاهزية الورش والمختبرات والوضع الأمني</div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>جاهزية القاعات والمختبرات الحاسوبية:</label>
+                    <select id="labReadiness" onchange="autoSaveForm()">
+                        <option>جاهزة بالكامل وتعمل بكفاءة عالية</option>
+                        <option>يوجد بعض الأعطال التقنية البسيطة جاري صبيانتها</option>
+                        <option>تحت الصيانة والتدقيق الدوري</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>جاهزية ورش الصيانة والإمداد الفني:</label>
+                    <select id="workshopReadiness" onchange="autoSaveForm()">
+                        <option>جاهزة بالكامل ومجهزة بالمعدات اللازمة</option>
+                        <option>جاهزة جزئياً مع نقص في بعض المواد الأولية</option>
+                        <option>جاهزة لاستقبال التطبيق العملي للطلاب</option>
+                    </select>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>الوضع الأمني والملاحظات العامة:</label>
+                    <textarea id="securityNotes" rows="3" placeholder="أدخل أي ملاحظات أمنية أو تنظيمية أو طلبات إدارية طارئة هنا..." oninput="autoSaveForm()"></textarea>
+                </div>
+            </div>
+        </div>
+ <!-- Section 10: Mail Archive (Updated for PDF) -->
+        <div class="section-card" id="section-mail">
+            <div class="section-header">
+                <div class="section-title"><span>10</span> عاشراً: نظام أرشفة ومتابعة البريد والمراسلات الرسمية (PDF)</div>
+            </div>
+
+            <div class="form-grid" style="margin-bottom: 25px; background: #f8faf9; padding: 18px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <div class="form-group">
+                    <label>عنوان / موضوع الكتاب:</label>
+                    <input type="text" id="mailTitle" placeholder="مثال: طلب تجهيزات معمل الحاسوب">
+                </div>
+                <div class="form-group">
+                    <label>رقم الكتاب / الصادر أو الوارد:</label>
+                    <input type="text" id="mailNumber" placeholder="مثال: 345/ص">
+                </div>
+                <div class="form-group">
+                    <label>تاريخ الكتاب:</label>
+                    <input type="date" id="mailDate">
+                </div>
+                <div class="form-group">
+                    <label>حالة الكتاب البرمجي:</label>
+                    <select id="mailStatus">
+                        <option value="بانتظار الرد">⏳ بانتظار الرد</option>
+                        <option value="معلق">⏸️ معلق</option>
+                        <option value="منجز">✅ منجز</option>
+                    </select>
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>ملف البريد / الكتاب (يقبل ملفات PDF أو صور):</label>
+                    <input type="file" id="mailFile" accept="application/pdf,image/*">
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <button class="btn btn-accent" style="width:100%; font-size:15px;" onclick="addMailRecord()">📄 إدراج وحفظ المستند في الأرشيف</button>
+                </div>
+            </div>
+
+            <div class="mail-tabs">
+                <button class="mail-tab active" onclick="filterMailTab('all', this)">🌐 الكل (<span id="count-all">0</span>)</button>
+                <button class="mail-tab" onclick="filterMailTab('بانتظار الرد', this)">⏳ بانتظار الرد (<span id="count-pending">0</span>)</button>
+                <button class="mail-tab" onclick="filterMailTab('معلق', this)">⏸️ معلق (<span id="count-suspended">0</span>)</button>
+                <button class="mail-tab" onclick="filterMailTab('منجز', this)">✅ منجز (<span id="count-completed">0</span>)</button>
+            </div>
+
+            <div class="mail-grid" id="mailGridContainer"></div>
+        </div>
+
+        <!-- Section 11 -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title"><span>11</span> حادي عشر: إدارة واستخراج البيانات والنسخ الاحتياطي</div>
+            </div>
+            <div style="display:flex; gap:15px; flex-wrap:wrap;">
+                <button class="btn btn-accent" onclick="exportToExcelCSV()">📊 تصدير التقرير والبيانات الحالية إلى Excel (CSV)</button>
+                <button class="btn btn-secondary" onclick="exportBackupJSON()">💾 تصدير نسخة احتياطية الشاملة (JSON)</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="floating-actions">
+        <button class="btn btn-primary" onclick="generateAndPreviewCliche()">👁️ معاينة الكليشة النصية</button>
+        <button class="btn btn-accent" onclick="sendReportToTelegram()">🚀 إرسال التقرير فوراً إلى Telegram</button>
+        <button class="btn btn-secondary" onclick="saveLocalDraft()">💾 حفظ مسودة محلياً</button>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="clicheModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>معاينة نص الكليشة المقترحة للتقرير</h3>
+<span class="close-modal" onclick="closeModal('clicheModal')">&times;</span>
+            </div>
+            <div class="cliche-preview" id="clicheTextHolder"></div>
+            <div style="margin-top:15px; display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-secondary" onclick="copyCliche()">نسخ النص</button>
+                <button class="btn btn-accent" onclick="sendReportToTelegram(); closeModal('clicheModal');">تأكيد وإرسال إلى Telegram</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="mailViewModal">
+        <div class="modal-content" style="max-width:850px; text-align:center;">
+            <div class="modal-header">
+                <h3 id="mailModalTitle">معاينة المستند</h3>
+                <span class="close-modal" onclick="closeModal('mailViewModal')">&times;</span>
+            </div>
+            <div id="mailModalViewer" style="margin-top:10px;"></div>
+            <p id="mailModalDetails" style="margin-top:12px; font-weight:bold; font-size:14px; color:var(--primary-color);"></p>
+        </div>
+    </div>
+
+    <div class="modal" id="historyModal">
+        <div class="modal-content" style="max-width:800px;">
+            <div class="modal-header">
+                <h3>سجل التقارير المحفوظة سابقاً</h3>
+                <span class="close-modal" onclick="closeModal('historyModal')">&times;</span>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>المناوب</th>
+                            <th>اسم الدورة</th>
+                            <th>العدد الكلي</th>
+                            <th>حالة الإرسال</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إعدادات الربط والنسخ الاحتياطي</h3>
+                <span class="close-modal" onclick="closeModal('settingsModal')">&times;</span>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label>Telegram Bot Token (رمز البوت):</label>
+                <input type="text" id="cfgToken" placeholder="مثال: 712345678:AAFg...">
+            </div>
+            <div class="form-group" style="margin-bottom:15px;">
+                <label>Telegram Chat ID (معرف القناة أو المجموعة):</label>
+                <input type="text" id="cfgChatId" placeholder="مثال: -100123456789">
+            </div>
+            <button class="btn btn-primary" style="width:100%;" onclick="saveSettings()">حفظ الإعدادات</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة © <strong>وزارة الدفاع - كلية الشؤون الفنية والإدارية</strong></p>
+    </footer>
+
+    <script>
+        const SafeStorage = {
+            getItem: (k) => { try { return localStorage.getItem(k); } catch(e) { return null; } },
+            setItem: (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} }
+        };
+
+        let currentMailFilter = 'all';
+
+        window.onload = function() {
+            initAutoDateAndWeather();
+            loadAllFormData();
+            calculateFoodTotals();
+            loadHistoryTable();
+            renderMailArchive();
+        };
+
+        function initAutoDateAndWeather() {
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const dateInput = document.getElementById('reportDate');
+            if(!dateInput.value) dateInput.value = dateStr;
+
+            const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+            document.getElementById('reportDay').value = days[now.getDay()];
+            document.getElementById('mailDate').value = dateStr;
+ fetch('https://wttr.in/?format=3')
+                .then(r => r.text())
+                .then(txt => {
+                    if(txt && txt.length < 40) document.getElementById('weatherInput').value = txt.trim();
+                    else document.getElementById('weatherInput').value = '☀️ صحو / معتدل';
+                })
+                .catch(() => { document.getElementById('weatherInput').value = '☀️ صحو / 22°C'; });
+        }
+
+        function autoSaveForm() {
+            const formData = {
+                reportDate: document.getElementById('reportDate').value,
+                reportDay: document.getElementById('reportDay').value,
+                dutyOfficer: document.getElementById('dutyOfficer').value,
+                assistantOfficer: document.getElementById('assistantOfficer').value,
+                courseName: document.getElementById('courseName').value,
+                traineesCount: document.getElementById('traineesCount').value,
+                courseStatus: document.getElementById('courseStatus').value,
+                staffCommand: document.getElementById('staffCommand').value,
+                staffEngineers: document.getElementById('staffEngineers').value,
+                staffAdmin: document.getElementById('staffAdmin').value,
+                instructorsMil: document.getElementById('instructorsMil').value,
+                instructorsCiv: document.getElementById('instructorsCiv').value,
+                staffMedical: document.getElementById('staffMedical').value,
+                staffServices: document.getElementById('staffServices').value,
+                staffGuard: document.getElementById('staffGuard').value,
+                guardStatus: document.getElementById('guardStatus').value,
+                mealTime: document.getElementById('mealTime').value,
+                mealStatus: document.getElementById('mealStatus').value,
+                labReadiness: document.getElementById('labReadiness').value,
+                workshopReadiness: document.getElementById('workshopReadiness').value,
+                securityNotes: document.getElementById('securityNotes').value,
+                weatherInput: document.getElementById('weatherInput').value,
+                visits: getVisitsData()
+            };
+            SafeStorage.setItem('college_form_draft', JSON.stringify(formData));
+        }
+
+        function loadAllFormData() {
+            const saved = SafeStorage.getItem('college_form_draft');
+            if(saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    Object.keys(data).forEach(key => {
+                        if(key === 'visits') {
+                            renderVisitsRows(data.visits);
+                        } else {
+                            const el = document.getElementById(key);
+                            if(el && data[key] !== undefined) el.value = data[key];
+                        }
+                    });
+                } catch(e){}
+            }
+            if(SafeStorage.getItem('col_tg_token')) document.getElementById('cfgToken').value = SafeStorage.getItem('col_tg_token');
+            if(SafeStorage.getItem('col_tg_chatid')) document.getElementById('cfgChatId').value = SafeStorage.getItem('col_tg_chatid');
+        }
+
+        function calculateFoodTotals() {
+            const command = parseInt(document.getElementById('staffCommand').value) || 0;
+            const engineers = parseInt(document.getElementById('staffEngineers').value) || 0;
+            const admin = parseInt(document.getElementById('staffAdmin').value) || 0;
+            const instMil = parseInt(document.getElementById('instructorsMil').value) || 0;
+            const instCiv = parseInt(document.getElementById('instructorsCiv').value) || 0;
+            const medical = parseInt(document.getElementById('staffMedical').value) || 0;
+ const services = parseInt(document.getElementById('staffServices').value) || 0;
+            const guard = parseInt(document.getElementById('staffGuard').value) || 0;
+            const trainees = parseInt(document.getElementById('traineesCount').value) || 0;
+
+            const instTotal = instMil + instCiv;
+            const medTotal = medical + services;
+            const grandTotal = command + engineers + admin + instTotal + medTotal + guard + trainees;
+
+            document.getElementById('c_command').innerText = command;
+            document.getElementById('c_engineers').innerText = engineers;
+            document.getElementById('c_admin').innerText = admin;
+            document.getElementById('c_instructors').innerText = instTotal;
+            document.getElementById('c_medical').innerText = medTotal;
+            document.getElementById('c_guard').innerText = guard;
+            document.getElementById('c_trainees').innerText = trainees;
+            document.getElementById('c_total').innerText = grandTotal;
+        }
+
+        function addVisitRow(name='', role='', purpose='', time='', notes='') {
+            const tbody = document.getElementById('visitsTableBody');
+            const tr = document.createElement('tr');
+            tr.innerHTML = 
+                <td><input type="text" value="${name}" placeholder="الاسم" oninput="autoSaveForm()"></td>
+                <td><input type="text" value="${role}" placeholder="الصفة" oninput="autoSaveForm()"></td>
+                <td><input type="text" value="${purpose}" placeholder="السبب" oninput="autoSaveForm()"></td>
+                <td><input type="text" value="${time}" placeholder="الوقت" oninput="autoSaveForm()"></td>
+                <td><input type="text" value="${notes}" placeholder="ملاحظات" oninput="autoSaveForm()"></td>
+                <td><button class="btn btn-danger" onclick="this.closest('tr').remove(); autoSaveForm();">حذف</button></td>
+            ;
+            tbody.appendChild(tr);
+            autoSaveForm();
+        }
+
+        function getVisitsData() {
+            const rows = document.querySelectorAll('#visitsTableBody tr');
+            const visits = [];
+            rows.forEach(tr => {
+                const inputs = tr.querySelectorAll('input');
+                visits.push({
+                    name: inputs[0].value,
+                    role: inputs[1].value,
+                    purpose: inputs[2].value,
+                    time: inputs[3].value,
+                    notes: inputs[4].value
+                });
+            });
+            return visits;
+        }
+
+        function renderVisitsRows(visitsArray) {
+            const tbody = document.getElementById('visitsTableBody');
+            tbody.innerHTML = '';
+            if(visitsArray && visitsArray.length > 0) {
+                visitsArray.forEach(v => addVisitRow(v.name, v.role, v.purpose, v.time, v.notes));
+            }
+        }
+
+        // MAIL ARCHIVING (PDF + IMAGE HANDLER)
+        function addMailRecord() {
+            const title = document.getElementById('mailTitle').value.trim();
+            const number = document.getElementById('mailNumber').value.trim();
+            const date = document.getElementById('mailDate').value;
+            const status = document.getElementById('mailStatus').value;
+            const fileInput = document.getElementById('mailFile');
+
+            if(!title) return alert('يرجى كتابة عنوان أو موضوع الكتاب!');
+
+            const file = fileInput.files && fileInput.files[0];
+            const isPdf = file ? (file.type === 'application/pdf' || file.name.endsWith('.pdf')) : false;
+
+            const processSave = (fileData) => {
+                const mails = JSON.parse(SafeStorage.getItem('col_mail_archive') || '[]');
+                mails.unshift({ 
+                    id: Date.now(),
+ title, 
+                    number: number || 'بدون رقم', 
+                    date, 
+                    status, 
+                    fileData: fileData || '',
+                    isPdf: isPdf
+                });
+                SafeStorage.setItem('col_mail_archive', JSON.stringify(mails));
+                
+                document.getElementById('mailTitle').value = '';
+                document.getElementById('mailNumber').value = '';
+                fileInput.value = '';
+                alert('تمت أرشفة المستند بنجاح!');
+                renderMailArchive();
+            };
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => processSave(e.target.result);
+                reader.readAsDataURL(file);
+            } else {
+                processSave('');
+            }
+        }
+
+        function renderMailArchive() {
+            const mails = JSON.parse(SafeStorage.getItem('col_mail_archive') || '[]');
+            const container = document.getElementById('mailGridContainer');
+            container.innerHTML = '';
+
+            document.getElementById('count-all').innerText = mails.length;
+            document.getElementById('count-pending').innerText = mails.filter(m => m.status === 'بانتظار الرد').length;
+            document.getElementById('count-suspended').innerText = mails.filter(m => m.status === 'معلق').length;
+            document.getElementById('count-completed').innerText = mails.filter(m => m.status === 'منجز').length;
+
+            const filtered = mails.filter(m => currentMailFilter === 'all' || m.status === currentMailFilter);
+            if(filtered.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px; color:#777;">لا يوجد كتب في هذا التبويب</div>';
+                return;
+            }
+
+            filtered.forEach(mail => {
+                const badgeClass = 'badge-' + mail.status.replace(/\s+/g, '-');
+                let thumbHtml = '';
+
+                if(mail.isPdf || (mail.fileData && mail.fileData.startsWith('data:application/pdf'))) {
+                    thumbHtml = 
+                        <div class="pdf-thumb" onclick="viewMailFile(${mail.id})">
+                            <span>📄</span>
+                            <div>مستند PDF</div>
+                        </div>;
+                } else if(mail.fileData) {
+                    thumbHtml = <img src="${mail.fileData}" onclick="viewMailFile(${mail.id})" alt="الكتاب">;
+                } else {
+                    thumbHtml = 
+                        <div class="pdf-thumb" onclick="viewMailFile(${mail.id})">
+                            <span>📋</span>
+                            <div>لا يوجد ملف مرفق</div>
+                        </div>;
+                }
+
+                container.innerHTML += `
+                    <div class="mail-card">
+                        ${thumbHtml}
+                        <div class="mail-card-body">
+                            <div>
+                                <span class="mail-badge ${badgeClass}">${mail.status}</span>
+                                <div class="mail-card-title">${mail.title}</div>
+                                <div class="mail-card-meta">رقم الكتاب: ${mail.number}</div>
+                                <div class="mail-card-meta">التاريخ: ${mail.date}</div>
+                            </div>
+                            <div style="margin-top:10px; display:flex; gap:5px;">
+                                <select onchange="updateMailStatus(${mail.id}, this.value)" style="font-size:11px; padding:4px;">
+                                    <option value="بانتظار الرد" ${mail.status==='بانتظار الرد'?'selected':''}>بانتظار الرد</option>
+                                    <option value="معلق" ${mail.status==='معلق'?'selected':''}>معلق</option>
+ <option value="منجز" ${mail.status==='منجز'?'selected':''}>منجز</option>
+                                </select>
+                                <button class="btn btn-danger" onclick="deleteMailRecord(${mail.id})">حذف</button>
+                            </div>
+                        </div>
+                    </div>
+                ;
+            });
+        }
+
+        function filterMailTab(status, btn) {
+            currentMailFilter = status;
+            document.querySelectorAll('.mail-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            renderMailArchive();
+        }
+
+        function updateMailStatus(id, newStatus) {
+            let mails = JSON.parse(SafeStorage.getItem('col_mail_archive') || '[]');
+            mails = mails.map(m => m.id === id ? {...m, status: newStatus} : m);
+            SafeStorage.setItem('col_mail_archive', JSON.stringify(mails));
+            renderMailArchive();
+        }
+
+        function deleteMailRecord(id) {
+            if(confirm('هل أنت تأكد من حذف هذا الكتاب من الأرشيف؟')) {
+                let mails = JSON.parse(SafeStorage.getItem('col_mail_archive') || '[]');
+                mails = mails.filter(m => m.id !== id);
+                SafeStorage.setItem('col_mail_archive', JSON.stringify(mails));
+                renderMailArchive();
+            }
+        }
+
+        function viewMailFile(id) {
+            const mails = JSON.parse(SafeStorage.getItem('col_mail_archive') || '[]');
+            const mail = mails.find(m => m.id === id);
+            if(!mail) return;
+
+            document.getElementById('mailModalTitle').innerText = mail.title;
+            document.getElementById('mailModalDetails').innerText = رقم الكتاب: ${mail.number} | التاريخ: ${mail.date};
+            
+            const viewer = document.getElementById('mailModalViewer');
+            viewer.innerHTML = '';
+
+            if(mail.isPdf || (mail.fileData && mail.fileData.startsWith('data:application/pdf'))) {
+                viewer.innerHTML = 
+                    <iframe src="${mail.fileData}" style="width:100%; height:550px; border:1px solid #ccc; border-radius:8px;"></iframe>
+                    <div style="margin-top:10px;">
+                        <a href="${mail.fileData}" download="${mail.title}.pdf" target="_blank" class="btn btn-accent">📥 فتح / تحميل ملف PDF</a>
+                    </div>
+                ;
+            } else if(mail.fileData) {
+                viewer.innerHTML = <img src="${mail.fileData}" style="max-width:100%; max-height:65vh; border-radius:8px;">;
+            } else {
+                viewer.innerHTML = '<p style="padding:40px; color:#777;">لا يوجد ملف مرفق لهذا الكتاب.</p>';
+            }
+
+            openModal('mailViewModal');
+        }
+
+        function exportToExcelCSV() {
+            const date = document.getElementById('reportDate').value;
+            const officer = document.getElementById('dutyOfficer').value;
+            const course = document.getElementById('courseName').value;
+            const trainees = document.getElementById('traineesCount').value;
+            const totalPeople = document.getElementById('c_total').innerText;
+            const security = document.getElementById('securityNotes').value;
+
+            let csv = "\uFEFF";
+            csv += "القسم,البيان / القيمة\n";
+            csv += تاريخ التقرير,${date}\n;
+            csv += اليوم,${document.getElementById('reportDay').value}\n;
+            csv += ضابط الشرف,${officer}\n;
+            csv += اسم الدورة,${course}\n;
+            csv += عدد الطلاب المتدربين,${trainees}\n;
+            csv += إجمالي العدد التمويني,${totalPeople}\n;
+            csv += الوضع الأمني والملاحظات,${security.replace(/\n/g, ' ')}\n\n;
+
+            csv += "جدول الزيارات والوفود\nالاسم,الصفة,السبب,الوقت,ملاحظات\n";
+            getVisitsData().forEach(v => {
+                csv += "${v.name}","${v.role}","${v.purpose}","${v.time}","${v.notes}"\n`;
+            });
+ const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = تقرير_الكلية_${date}.csv;
+            link.click();
+        }
+
+        function buildClicheText() {
+            return --- 🇸🇾 التقرير اليومي لكلية الشؤون الفنية والإدارية ---
+📅 اليوم والتاريخ: ${document.getElementById('reportDay').value} | ${document.getElementById('reportDate').value}
+☀️ حالة الطقس: ${document.getElementById('weatherInput').value}
+👮‍♂️ ضابط الشرف: ${document.getElementById('dutyOfficer').value || 'لم يحدد'}
+
+1️⃣ موقف الدورات: ${document.getElementById('courseName').value || 'لا يوجد'} (عدد ${document.getElementById('traineesCount').value})
+2️⃣ إجمالي مستحقي التموين: ${document.getElementById('c_total').innerText} فرد
+3️⃣ تفقد الحراسة: ${document.getElementById('guardStatus').value}
+4️⃣ الوضع الأمني: ${document.getElementById('securityNotes').value || 'مستقر بالكامل'};
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function generateAndPreviewCliche() {
+            document.getElementById('clicheTextHolder').innerText = buildClicheText();
+            openModal('clicheModal');
+        }
+
+        function copyCliche() {
+            navigator.clipboard.writeText(buildClicheText());
+            alert('تم نسخ نص الكليشة!');
+        }
+
+        function saveSettings() {
+            SafeStorage.setItem('col_tg_token', document.getElementById('cfgToken').value);
+            SafeStorage.setItem('col_tg_chatid', document.getElementById('cfgChatId').value);
+            alert('تم حفظ إعدادات Telegram!');
+            closeModal('settingsModal');
+        }
+
+        async function sendReportToTelegram() {
+            const token = SafeStorage.getItem('col_tg_token');
+            const chatId = SafeStorage.getItem('col_tg_chatid');
+            if(!token || !chatId) return alert('يرجى إدخال Bot Token و Chat ID في الإعدادات أولاً!');
+
+            try {
+                const res = await fetch(https://api.telegram.org/bot${token}/sendMessage, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: buildClicheText() })
+                });
+                const data = await res.json();
+                if(data.ok) alert('تم إرسال التقرير بنجاح عبر Telegram!');
+                else alert('فشل الإرسال: ' + data.description);
+            } catch(e) { alert('حدث خطأ في الاتصال بالشبكة!'); }
+        }
+
+        function saveLocalDraft() {
+            autoSaveForm();
+            alert('تم حفظ التقرير بجميع بياناته مسودة محلياً بنجاح!');
+        }
+
+        function exportBackupJSON() {
+            const data = {
+                form: JSON.parse(SafeStorage.getItem('college_form_draft') || '{}'),
+                mails: JSON.parse(SafeStorage.getItem('col_mail_archive') || '[]')
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = backup_college_system.json;
+            link.click();
+        }
+    </script>
+</body>
+</html>
